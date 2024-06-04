@@ -1,0 +1,16 @@
+{
+    "name": "bogusz/totp-api",
+    "description": "OTP API for University project",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "boguszk12",
+            "email": "bogusz.krzyzanow@gmail.com"
+        }
+    ],
+    "require": {
+        "spomky-labs/otphp": "^11.2",
+        "endroid/qr-code": "^5.0"
+    }
+}

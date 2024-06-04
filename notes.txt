@@ -1,0 +1,8 @@
+
+
+
+
+
+curl -X POST -H "Content-Type: application/json" -d "{\"username\": \"testuser2\", \"password\": \"testpass\"}" http://localhost/totp-api/src/index.php/register
+
+curl -X POST -H "Content-Type: application/json" -d "{\"username\": \"mikey\", \"password\": \"2000sfa\", \"totp_code\": \"608897\"}" http://localhost/totp-api/src/index.php/verify
