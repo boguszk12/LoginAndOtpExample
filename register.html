@@ -4,21 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Display QR Code</title>
 </head>
 
-<body>
-    <h1>Scan this QR Code with your TOTP app</h1>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="registerUser()">Generate QR Code</button>
-    <img id="qrcode" src="" alt="QR Code">
+<body class="w-[100vw] h-[100vh] flex justify-center items-center">
+<div class="flex flex-row shadow-xl rounded-[10px] overflow-hidden">
+    <div class="flex flex-col gap-y-6 w-[350px] bg-white p-6 border-r-[2px]">
+        <h1 class="text-2xl text-center">Scan this QR Code with your TOTP app</h1>
+        <input type="text" id="username" placeholder="Username" class="input input-primary">
+        <input type="password" id="password" placeholder="Password" class="input">
+        <button onclick="registerUser()" class="btn btn-primary">Generate your QR Code</button>
+    </div>
+    <div class="flex justify-start items-center p-6 w-[300px] bg-white flex-col">
+        <h1 class="flex flex-row items-center justify-between text-2xl text-center">Your generated QR code:</h1>
+        <img id="qrcode" src="" alt="QR Code" class="rounded-md hidden" />
+        <p id="errorText" class="text-warning text-center hidden transition-all">We ran into an error while generating your QR Code :(</p>
+    </div>
+</div>
+<script>
+    const errorText = document.getElementById('errorText');
+    let isQrCodeGenerated = false;
 
-    <script>
-        async function registerUser() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    async function registerUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
+        errorText.classList.add('hidden');
+        document.getElementById('qrcode').classList.add('hidden');
+
+        try {
             const response = await fetch('http://localhost/totp-api/src/index.php/register', {
                 method: 'POST',
                 headers: {
@@ -30,10 +46,26 @@
                 })
             });
 
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
             const data = await response.json();
-            document.getElementById('qrcode').src = 'data:image/png;base64,' + data.qr_code;
+
+            if (data.qr_code) {
+                document.getElementById('qrcode').src = 'data:image/png;base64,' + data.qr_code;
+                isQrCodeGenerated = true;
+                document.getElementById('qrcode').classList.remove('hidden');
+            } else {
+                throw new Error('QR code not found in the response');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorText.textContent = 'We ran into an error while generating your QR Code :(';
+            errorText.classList.remove('hidden');
         }
-    </script>
+    }
+</script>
 </body>
 
 </html>
