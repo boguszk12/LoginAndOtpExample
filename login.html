@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Display QR Code</title>
+</head>
+
+<body class="w-[100vw] h-[100vh] flex justify-center items-center">
+<div class="flex flex-col w-3/4 md:w-auto md:flex-row shadow-xl rounded-[10px] overflow-hidden">
+    <div class="flex w-full md:w-[350px] flex-col gap-y-6 bg-white p-6 border-r-[2px]">
+        <h1 class="text-2xl text-center">Login </h1>
+        <input type="text" id="username" placeholder="Username" class="input input-primary">
+        <input type="password" id="password" placeholder="Password" class="input">
+        <button onclick="registerUser()" class="btn btn-primary">Generate your QR Code</button>
+        <a href="login.html">Log in</a>
+    </div>
+
+    <input type="text" id="username" placeholder="Username" class="input input-primary">
+    <input type="password" id="password" placeholder="Password" class="input">
+</div>
+</body>
+<script>
+    const password = document.getElementById('password').value;
+</script>
+</html>

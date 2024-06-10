@@ -1,9 +1,9 @@
 <?php
 return [
     'db' => [
-        'host' => 'localhost:3307',
+        'host' => '127.0.0.1:3306',
         'dbname' => 'totp_api',
-        'user' => 'totpservice',
-        'password' => 'totppassword%',
+        'user' => 'admin',
+        'password' => 'admin',
     ],
 ];

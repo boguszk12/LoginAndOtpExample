@@ -34,7 +34,7 @@ if ($requestMethod == 'POST' && $requestUri == '/totp-api/src/index.php/register
                 echo json_encode(['message' => 'User registered, but QR code generation failed', 'totp_secret' => $totpSecret]);
             }
         }
-        
+
     } else {
         echo json_encode(['error' => 'Invalid input']);
     }
@@ -48,9 +48,9 @@ if ($requestMethod == 'POST' && $requestUri == '/totp-api/src/index.php/register
         }
         else{
 
-        $passwordValidity = password_verify($data['password'], $userData['hashed_password']);
-        echo "password".$passwordValidity;
-        $totpValidity = $totpService->verify($userData['totp_secret'], $data['totp_code']);
+            $passwordValidity = password_verify($data['password'].$userData['salt'], $userData['hashed_password']);
+            echo "password".$passwordValidity;
+            $totpValidity = $totpService->verify($userData['totp_secret'], $data['totp_code']);
 
             if ($passwordValidity && $totpValidity) {
                 echo json_encode(['message' => 'User verified successfully']);
@@ -58,10 +58,32 @@ if ($requestMethod == 'POST' && $requestUri == '/totp-api/src/index.php/register
                 echo json_encode(['error' => 'Password or OTP code is invalid.']);
             }
 
-        }   
+        }
     } else {
         echo json_encode(['error' => 'Invalid input']);
     }
-} else {
+}
+elseif ($requestMethod == 'POST' && $requestUri == '/totp-api/src/index.php/login') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (isset($data['username']) && isset($data['password'])) {
+        $userData = $user->getUser($data['username']);
+        if ($userData == false){
+            echo json_encode(['message' => 'Username was not found.']);
+        }
+        else{
+            $passwordValidity = password_verify($data['password'].$userData['salt'], $userData['hashed_password']);
+            echo "password".$passwordValidity;
+            if ($passwordValidity) {
+                echo json_encode(['message' => 'User cridentials are valid.']);
+            } else {
+                echo json_encode(['error' => 'Password is invalid.']);
+            }
+
+        }
+    } else {
+        echo json_encode(['error' => 'Invalid input']);
+    }
+}
+else {
     echo json_encode(['error' => 'Invalid endpoint']);
 }

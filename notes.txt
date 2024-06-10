@@ -6,3 +6,5 @@
 curl -X POST -H "Content-Type: application/json" -d "{\"username\": \"testuser2\", \"password\": \"testpass\"}" http://localhost/totp-api/src/index.php/register
 
 curl -X POST -H "Content-Type: application/json" -d "{\"username\": \"mikey\", \"password\": \"2000sfa\", \"totp_code\": \"608897\"}" http://localhost/totp-api/src/index.php/verify
+
+Invoke-RestMethod -Uri "http://localhost/totp-api/src/index.php/verify" -Method Post -Headers @{"Content-Type"="application/json"} -Body (@{username="admin123";password="admin123";totp_code="654603"} | ConvertTo-Json)
