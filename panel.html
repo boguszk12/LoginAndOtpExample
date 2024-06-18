@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Display QR Code</title>
+</head>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Firefox */
+    
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<body class="w-[100vw] h-[100vh] flex justify-center items-center">
+    <div class="flex flex-col w-3/4 md:w-auto bg-white shadow-xl rounded-[10px] overflow-hidden">
+        <div id="login-step" class="flex w-full md:w-[350px] flex-col gap-y-6 bg-white p-6">
+            <h1 class="text-2xl text-center">Welcome</h1>
+            <p id="panel-validity" class="text-green-500 hidden">JWT is Valid</p>
+            <p id="panel-error" class="text-red-500 hidden">JWT is not Valid</p>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Function to get query parameters from URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Get the token from URL query parameters
+        const token = getQueryParam('token');
+
+        if (token) {
+            // Send a request to validate the token
+            fetch('http://localhost/totp-api/src/index.php/jwt-validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: token,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.valid) {
+                        // Token is valid
+                        console.log('Token is valid:', data);
+                        document.getElementById('panel-validity').classList.remove('hidden');
+
+                    } else {
+                        // Token is invalid
+                        console.error('Token is invalid:', data);
+                        document.getElementById('panel-error').classList.remove('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('panel-error').classList.remove('hidden');
+                    document.body.insertAdjacentHTML('beforeend', '<p>Error validating token.</p>');
+                });
+        } else {
+            console.error('Token not found in URL');
+            document.getElementById('panel-error').textContent = "JWT was not found";
+            document.getElementById('panel-error').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
